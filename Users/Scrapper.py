@@ -1,3 +1,6 @@
+
+import requests
+import httpx
 import csv
 import requests
 from bs4 import BeautifulSoup
@@ -40,6 +43,38 @@ def scrape_stock_data(ticker):
 
     return stocks
 
+
+def get_ticker_list():
+    client = httpx.Client()
+    page=0
+    reqUrl = f"https://finance.yahoo.com/screener/unsaved/78b0c185-f2e9-49f2-8665-cb113f39c1b3?count=100&offset={page}"
+    listofallname=[]
+    headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)" 
+    }
+
+    payload = ""
+
+    r = client.get(reqUrl, headers=headersList)
+    soup=BeautifulSoup(r.text,'html.parser')
+    total=int((soup.find('div', class_='Fw(b) Fz(36px)')).text)//100
+    all_name=soup.find_all('a', class_="Fw(600) C($linkColor)")
+    for element in all_name:
+        listofallname.append(element.text)
+    page=100
+
+    for i in range(total):
+        reqUrl = f"https://finance.yahoo.com/screener/unsaved/78b0c185-f2e9-49f2-8665-cb113f39c1b3?count=100&offset={page}"
+        r = client.get(reqUrl, headers=headersList)
+        soup=BeautifulSoup(r.text,'html.parser')
+        all_name=soup.find_all('a', class_="Fw(600) C($linkColor)")
+        for element in all_name:
+            listofallname.append(element.text)
+        page+=100
+    client.close()
+    return listofallname
+
 def save_to_csv(stocks, filename='stocks.csv'):
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
@@ -51,11 +86,10 @@ def save_to_csv(stocks, filename='stocks.csv'):
             writer.writerow(row)
 
 if __name__ == "__main__":
-    ticker = [
-        "TATAMOTORS.NS",
-    ]
-
-    stocks = scrape_stock_data(ticker)
-    print(stocks[0].price)
+    pass
+    # stocks = scrape_stock_data(ticker)
+    # print(stocks[0].price)
     # save_to_csv(stocks)
-    print("Data scraped and saved to stocks.csv")
+
+    # get_ticker_list()
+    # print("Data scraped and saved to stocks.csv")

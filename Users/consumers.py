@@ -28,6 +28,9 @@ import requests
 from bs4 import BeautifulSoup
 from StockProject.settings import SCRAPPING_URL
 
+
+
+
 def scrape_stock_data(ticker):
     stocks = []
 
@@ -37,8 +40,10 @@ def scrape_stock_data(ticker):
         soup = BeautifulSoup(response.text, 'html.parser')
         stock_info_div = soup.find('div', {'id': 'quote-header-info'})
         ticker = yf.Ticker(t)
-    
-    # Get the live price
+        all_tickers = yf.Tickers('')
+
+        ticker_list = all_tickers.tickers
+        print(ticker_list)
         live_price = ticker.history(period='1d')['Close'][-1]
 
         print(live_price)

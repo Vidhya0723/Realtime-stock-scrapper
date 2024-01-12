@@ -12,6 +12,27 @@
   <body style="background: linear-gradient(to right, #ffafbd, #ffc3a0)">
     <header>
       <h1>Live Stock Price Chart</h1>
+      <button id="getStockButton">Get All Stock</button>
+
+      
+<div id="stockList"  style="display: none; max-height: 200px; overflow-y: auto;">
+  {% for stock in stocks %}
+      <p>{{ stock }}</p>
+  {% endfor %}
+</div>
+
+<script>
+  document.getElementById('getStockButton').addEventListener('click', function() {
+      var stockListDiv = document.getElementById('stockList');
+      if (stockListDiv.style.display === 'none'){
+      stockListDiv.style.display = 'block';
+      }
+      else{
+      stockListDiv.style.display = 'none';
+
+      }
+  });
+</script>
     </header>
     <main>
       <aside class="sidebar">
